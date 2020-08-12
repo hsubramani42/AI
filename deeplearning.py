@@ -2,7 +2,7 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 
 class Splitter:
-  """**Kwargs takes inputs like val_pct,classes returns df,class"""
+  """**Kwargs takes inputs like val_pct,classes"""
   def classes_folder(path:str,**kwargs):
     import os
     import numpy as np
@@ -29,32 +29,7 @@ class Splitter:
     except Exception:
       idx=np.random.permutation(len(df))
       return df.iloc[idx],classes
-  def classes_folder(path:str,**kwargs):
-    import os
-    import numpy as np
-    import pandas as pd
-    classes,df=[],pd.DataFrame()
-    try:
-        classes=kwargs["classes"]
-    except Exception:
-      for i in os.listdir(path):
-        classes.append(i)
-    classes.sort()
-    label=[x for x in range(len(classes))]
-    files=os.listdir(os.path.join(path,classes[0]))
-    df["Image Index"]=files
-    df["Image Labels"]=label[0]
-    for i in range(1,len(label)):
-      files=os.listdir(os.path.join(path,classes[i]))
-      df_adder=pd.DataFrame({'Image Index':files,'Image Labels':label[i]})
-      df=pd.concat([df,df_adder],axis=0,ignore_index=True)
-    try:
-      val_size=int(kwargs["val_pct"]*len(df))
-      idx=np.random.permutation(len(df))
-      return df.iloc[idx[val_size:]],df.iloc[idx[:val_size]],classes
-    except Exception:
-      idx=np.random.permutation(len(df))
-      return df.iloc[idx],classes
+
 
 class ImageGenerator(Dataset):
   from pandas import DataFrame
